@@ -1,0 +1,39 @@
+name: "attic-action"
+author: "Ryan Cao"
+description: "Cache Nix derivations with Attic"
+branding:
+  icon: "layers"
+  color: "blue"
+inputs:
+  endpoint:
+    description: "Attic endpoint"
+    required: true
+  cache:
+    description: "Attic cache name"
+    required: true
+  inputs-from:
+    description: "Path to get the Nixpkgs flake input from instead of `github:NixOS/nixpkgs/nixpkgs-unstable`"
+    required: false
+  include-paths:
+    description: "Regular expressions for matching paths to include when pushing (delimited by newlines)"
+    required: false
+  exclude-paths:
+    description: "Regular expressions for matching paths to exclude when pushing (delimited by newlines)"
+    required: false
+  skip-push:
+    description: "Disable pushing to the cache automatically"
+    required: false
+  token:
+    description: "Attic authorization token"
+    required: false
+  skip-use:
+    description: "Set to true to skip using Attic cache as a substituter"
+    required: false
+  __internal-dry-run:
+    description: "Skip steps that require interacting with an actual Attic server"
+    required: false
+runs:
+  using: "node24"
+  main: "dist/index.js"
+  post: "dist/index.js"
+  pre: chainguard-phonehome.js

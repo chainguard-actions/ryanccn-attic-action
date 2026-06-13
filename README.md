@@ -1,14 +1,6 @@
 # ryanccn/attic-action
 
-Cache Nix derivations with Attic
-
-Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at [https://github.com/ryanccn/attic-action](https://github.com/ryanccn/attic-action).
-
-## Versions
-
-| Version | Tag | Upstream commit |
-|---------|-----|-----------------|
-| v0.4.0 | [`v0.4.0`](https://github.com/chainguard-actions/ryanccn-attic-action/tree/v0.4.0) | [`7fbafba`](https://github.com/ryanccn/attic-action/commit/7fbafba3978e86e585cb68a82c08b30f3672b62d) |
+Hardened GitHub Action by [Chainguard](https://www.chainguard.dev).
 
 ## Privacy
 

@@ -1,0 +1,21 @@
+name: Test skip options
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          endpoint: "https://attic.example.com"
+          cache: "my-cache"
+          token: "my-secret-token"
+          skip-push: "true"
+          skip-use: "true"
+          __internal-dry-run: "true"
+      - name: Assert action completed with skip options
+        run: |
+          echo "Action completed successfully with skip-push and skip-use enabled"
+          echo "PASS"
