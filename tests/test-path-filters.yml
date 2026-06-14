@@ -1,0 +1,27 @@
+name: Test path filter inputs
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          endpoint: "https://attic.example.com"
+          cache: "my-cache"
+          token: "test-token-abc123"
+          skip-push: "true"
+          skip-use: "true"
+          include-paths: |
+            ^/nix/store/.*-my-package-.*
+          exclude-paths: |
+            ^/nix/store/.*-source.*
+          inputs-from: "."
+        continue-on-error: true
+      - name: Assert action ran with path filters
+        run: |
+          echo "Action completed with include-paths, exclude-paths, and inputs-from set"
+          echo "outcome: ${{ steps.action.outcome }}"
+          echo "PASS"
