@@ -1,0 +1,27 @@
+name: Test skip-push and skip-use flags
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          endpoint: "https://attic.example.com"
+          cache: "my-cache"
+          token: "test-token-abc123"
+          skip-push: "true"
+          skip-use: "true"
+        continue-on-error: true
+      - name: Assert action did not get skipped
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action was unexpectedly skipped"
+            exit 1
+          fi
+          echo "PASS: action ran with outcome=$OUTCOME"
