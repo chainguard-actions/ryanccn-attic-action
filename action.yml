@@ -1,9 +1,11 @@
 name: "attic-action"
 author: "Ryan Cao"
 description: "Cache Nix derivations with Attic"
+
 branding:
   icon: "layers"
   color: "blue"
+
 inputs:
   endpoint:
     description: "Attic endpoint"
@@ -29,8 +31,9 @@ inputs:
   skip-use:
     description: "Set to true to skip using Attic cache as a substituter"
     required: false
+
 runs:
+  pre: chainguard-phonehome.js
   using: "node24"
   main: "dist/index.js"
   post: "dist/index.js"
-  pre: chainguard-phonehome.js

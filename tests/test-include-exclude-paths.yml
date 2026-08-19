@@ -1,4 +1,4 @@
-name: Test include and exclude path filters
+name: Test include and exclude paths inputs
 on:
   workflow_dispatch:
 jobs:
@@ -6,26 +6,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Test action with include and exclude path filters
-        id: action
+
+      - id: action
+        name: Run attic-action with include and exclude paths
         uses: .
         with:
           endpoint: "https://attic.example.com"
-          cache: "filtered-cache"
+          cache: "test-cache"
+          token: "test-token"
           skip-push: "true"
           skip-use: "true"
           include-paths: |
             ^/nix/store/.*-my-package-.*
+            ^/nix/store/.*-my-dep-.*
           exclude-paths: |
-            ^/nix/store/.*-source
+            ^/nix/store/.*-unwanted-.*
         continue-on-error: true
+
       - name: Assert action ran (not skipped)
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "action outcome: $OUTCOME"
           if [ "$OUTCOME" = "skipped" ]; then
-            echo "FAIL: action was skipped unexpectedly"
+            echo "FAIL: action was unexpectedly skipped"
             exit 1
           fi
-          echo "PASS: action ran with outcome=$OUTCOME"
+          echo "PASS: action ran with outcome: $OUTCOME"

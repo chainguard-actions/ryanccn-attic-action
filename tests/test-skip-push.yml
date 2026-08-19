@@ -1,4 +1,4 @@
-name: Test include and exclude path filters
+name: Test skip-push input
 on:
   workflow_dispatch:
 jobs:
@@ -6,18 +6,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - name: Test action with include and exclude path filters
+      - name: Test action with skip-push enabled
         id: action
         uses: .
         with:
           endpoint: "https://attic.example.com"
-          cache: "filtered-cache"
+          cache: "my-cache"
           skip-push: "true"
           skip-use: "true"
-          include-paths: |
-            ^/nix/store/.*-my-package-.*
-          exclude-paths: |
-            ^/nix/store/.*-source
+          token: "dummy-token"
         continue-on-error: true
       - name: Assert action ran (not skipped)
         env:

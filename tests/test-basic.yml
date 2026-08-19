@@ -1,4 +1,4 @@
-name: Test basic usage with skip flags
+name: Test basic usage with skip-push and skip-use
 on:
   workflow_dispatch:
 jobs:
@@ -6,17 +6,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
       - id: action
+        name: Run attic-action with all skips enabled
         uses: .
         with:
           endpoint: "https://attic.example.com"
-          cache: "my-cache"
-          token: "test-token-abc123"
+          cache: "test-cache"
+          token: "test-token"
           skip-push: "true"
           skip-use: "true"
         continue-on-error: true
-      - name: Assert action ran
+
+      - name: Assert action ran (not skipped)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "Action completed (skip-push and skip-use set to true)"
-          echo "outcome: ${{ steps.action.outcome }}"
-          echo "PASS"
+          echo "action outcome: $OUTCOME"
+          # The action should have run (success or failure), not been skipped
+          if [ "$OUTCOME" = "skipped" ]; then
+            echo "FAIL: action was unexpectedly skipped"
+            exit 1
+          fi
+          echo "PASS: action ran with outcome: $OUTCOME"
