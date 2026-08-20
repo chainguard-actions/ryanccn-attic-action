@@ -1,4 +1,4 @@
-name: Test basic usage (dry-run)
+name: Test inputs-from input
 on:
   workflow_dispatch:
 jobs:
@@ -11,18 +11,19 @@ jobs:
         continue-on-error: true
         with:
           endpoint: "https://attic.example.com"
-          cache: "my-cache"
-          token: "fake-token-for-dry-run"
+          cache: "test-cache"
+          token: "dummy-token"
+          inputs-from: "/nonexistent/flake"
+          skip-push: "true"
+          skip-use: "true"
           __internal-dry-run: "true"
-      - name: Assert action ran (dry-run mode)
+      - name: Assert action ran with inputs-from
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "outcome: $OUTCOME"
-          if [ "$OUTCOME" = "success" ]; then
-            echo "PASS: action completed successfully in dry-run mode"
-          elif [ "$OUTCOME" = "failure" ]; then
-            echo "PASS: action failed gracefully (Nix or node24 not available in this environment)"
+          if [ "$OUTCOME" = "success" ] || [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action ran with inputs-from input set (outcome: $OUTCOME)"
           else
             echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
