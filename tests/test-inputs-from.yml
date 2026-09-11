@@ -8,24 +8,23 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - id: action
         uses: .
+        continue-on-error: true
         with:
           endpoint: "https://attic.example.com"
           cache: "test-cache"
-          token: "dummy-token"
-          inputs-from: "."
+          inputs-from: "/tmp/nixpkgs-input"
           skip-push: "true"
           skip-use: "true"
-        continue-on-error: true
       - name: Assert action ran with inputs-from input
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "outcome: $OUTCOME"
-          # The action may fail because there's no real Attic server,
-          # but we verify it was invoked with the inputs-from input (not skipped due to missing input).
-          # A 'success' or 'failure' outcome both confirm the input was accepted and the action ran.
-          if [ "$OUTCOME" = "skipped" ]; then
-            echo "FAIL: action was skipped, expected it to run"
+          if [ "$OUTCOME" = "success" ]; then
+            echo "PASS: action succeeded with inputs-from input"
+          elif [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action failed gracefully (expected without real Attic endpoint)"
+          else
+            echo "FAIL: unexpected outcome '$OUTCOME'"
             exit 1
           fi
-          echo "PASS: action ran with inputs-from input (outcome=$OUTCOME)"
